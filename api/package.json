@@ -1,0 +1,10 @@
+{
+  "name": "notes-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zero-dependency API storing Notes as Kubernetes CRD objects",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

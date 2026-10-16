@@ -1,0 +1,20 @@
+# Deployed by the `notes` project (k8s.cluster: projects/notes.yaml) into namespace `notes`.
+# The Note CRD is cluster-scoped, so the platform repo installs it:
+# github.com/dgmmarin/k8s.cluster, platform/notes-crd/.
+# The images block is written by .github/workflows/images.yml on each push.
+# Formatted like `kustomize edit` writes it, so CI edits keep the layout.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- rbac.yaml
+- api.yaml
+- frontend.yaml
+- ingress.yaml
+# mise run seal-auth adds basic-auth.sealed.yaml here.
+images:
+- name: notes-api
+  newName: ghcr.io/dgmmarin/notes-api
+  newTag: not-built-yet
+- name: notes-frontend
+  newName: ghcr.io/dgmmarin/notes-frontend
+  newTag: not-built-yet

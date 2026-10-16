@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  labels: { app: api }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: api }
+  template:
+    metadata:
+      labels: { app: api }
+    spec:
+      serviceAccountName: notes-api        # <-- identity used to talk to k8s
+      containers:
+        - name: api
+          image: notes-api                  # tag set in kustomization.yaml by CI
+          ports:
+            - containerPort: 5000
+          env:
+            # Make Node trust the cluster CA so HTTPS calls to the API server verify.
+            - name: NODE_EXTRA_CA_CERTS
+              value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          readinessProbe:
+            httpGet: { path: /healthz, port: 5000 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /healthz, port: 5000 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests: { cpu: "10m", memory: "32Mi" }
+            limits: { cpu: "250m", memory: "128Mi" }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000 # the `node` user of the node image
+            capabilities:
+              drop: ["ALL"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api          # frontend's nginx proxies to http://api:5000
+spec:
+  selector: { app: api }
+  ports:
+    - port: 5000
+      targetPort: 5000

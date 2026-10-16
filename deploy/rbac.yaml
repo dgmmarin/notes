@@ -1,0 +1,29 @@
+# Identity + permissions for the API pod.
+# The pod authenticates to the Kubernetes API as this ServiceAccount, and the
+# Role grants it exactly the verbs it needs on Note objects — nothing else.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: notes-api
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: notes-editor
+rules:
+  - apiGroups: ["demo.example.com"]
+    resources: ["notes"]
+    verbs: ["get", "list", "watch", "create", "update", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: notes-api-editor
+subjects:
+  - kind: ServiceAccount
+    name: notes-api
+    namespace: notes # = the name in k8s.cluster projects/notes.yaml
+roleRef:
+  kind: Role
+  name: notes-editor
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,4 @@
+# Local env with the plain login password
+.env
+node_modules/
+dist/

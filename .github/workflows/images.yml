@@ -1,0 +1,52 @@
+# Build the notes app images, push them to ghcr.io, and commit the new tag
+# into deploy/kustomization.yaml. ArgoCD sees the commit and
+# deploys it.
+name: images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - "frontend/**"
+      - ".github/workflows/images.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+# One run at a time, so two tag commits do not race.
+concurrency: images
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build and push
+        # shortcut: amd64 only; for an ARM node, use docker buildx with --platform linux/arm64.
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          for app in api frontend; do
+            image="ghcr.io/$owner/notes-$app:$GITHUB_SHA"
+            docker build -t "$image" \
+              --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
+              "./$app"
+            docker push "$image"
+          done
+
+      - name: Commit the new tag for ArgoCD
+        run: |
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          cd deploy
+          kustomize edit set image \
+            "notes-api=ghcr.io/$owner/notes-api:$GITHUB_SHA" \
+            "notes-frontend=ghcr.io/$owner/notes-frontend:$GITHUB_SHA"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Deploy notes images ${GITHUB_SHA::7}"
+          git pull --rebase
+          git push

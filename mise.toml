@@ -1,0 +1,28 @@
+# Tools + tasks for the notes app — https://mise.jdx.dev
+# The cluster itself is managed in github.com/dgmmarin/k8s.cluster.
+
+[tools]
+kubectl = "1.36"  # matches the k3s minor version
+kubeseal = "0.38" # matches the sealed-secrets controller in k8s.cluster
+
+[env]
+# NOTES_USER / NOTES_PASSWORD live in .env (copy .env.example).
+_.file = ".env"
+
+[tasks.seal-auth]
+description = "Seal the login (NOTES_USER / NOTES_PASSWORD from .env) into deploy/. Needs KUBECONFIG for the cluster."
+run = """
+#!/usr/bin/env bash
+set -euo pipefail
+: "${NOTES_USER:?set NOTES_USER in .env}" "${NOTES_PASSWORD:?set NOTES_PASSWORD in .env}"
+: "${KUBECONFIG:?set KUBECONFIG, e.g. KUBECONFIG=../k8s.cluster/kubeconfig mise run seal-auth}"
+# ingress-nginx basic auth reads an htpasswd line from the `auth` key.
+kubectl create secret generic basic-auth --namespace notes \\
+  --from-literal=auth="$NOTES_USER:$(openssl passwd -apr1 -stdin <<<"$NOTES_PASSWORD")" \\
+  --dry-run=client -o yaml \\
+| kubeseal --format yaml > deploy/basic-auth.sealed.yaml
+cd deploy
+grep -q 'basic-auth.sealed.yaml' kustomization.yaml \\
+  || sed -i 's|^# mise run seal-auth adds basic-auth.sealed.yaml here.$|- basic-auth.sealed.yaml|' kustomization.yaml
+echo 'Wrote basic-auth.sealed.yaml and listed it in kustomization.yaml. Commit and push both.'
+"""
