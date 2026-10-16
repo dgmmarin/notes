@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: basic-auth
+  namespace: notes
+spec:
+  encryptedData:
+    auth: AgCr0aaiJE4am4rP6KUPayfczLC+ymVgx0XHJTT0z2nc/ffvcZiHdh1pfS17V2KVAl5SSYXsk9u+8Wfq/lpJdNkZlGKs3Zn2Y2DzIUGUTLTccxGn1Lk1TyGvgRK0ZGmchhO9gM6Q3n4FNlwjxEzBA27ZLkdiX/Un6pUwdpVVg1BCNcRWoOsGmZBNCE8Qo+XHZdoV4VPTZvl4U7r5cHDWWfNwyQO2Yt2hl6zqkGMfhWu2db5/iJ5YTHJfvc/8A6brVeo+n8xUSMrzwnqe9dD0zcVOB+mXYvXCUj+jcrNzfEqJOLAWMmc7iUkA3KfeWn0erzHfu9EaVLoxmAPqoq5L3CAY/sx/0iiE5tAF6cK+WzjlGHTneLx5aehbBPb3eCaha+GBQYw2ZKfxFcgTlscu0jaQPIdjCea/H9dvSSSZ814kcwbGBptE+zIQhZ241rOSA9tPwm71RxNyv/JWrrZKRjdRIiEO+xc7WeFDfVwy+wAW0xoEAS8I7Xx5Uml+3ikvVvPg2k1Yq1zzs3Y9P3SH66io4WOVbXJgMml1vSgA3znHUmOBlFvth9lN6jwHq2vZcDaIiMOvTWWn0qiilmR4VfKUOORZyvNNpA1NmsF8fq4XLJKGca448bsskRF/be82T1wycezQ6A2PoskfdahHy8uq5I9E/OArhBnKrbaGqLxHtcitugQdpkGJGUn1F3AW1Vpb+t3ZkRa7FUBRErhtQShdYCjoLYE4scFS/8UC8zQYVzdbD8tsG3wVYUip
+  template:
+    metadata:
+      name: basic-auth
+      namespace: notes
