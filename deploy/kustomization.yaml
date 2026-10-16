@@ -10,7 +10,7 @@ resources:
 - api.yaml
 - frontend.yaml
 - ingress.yaml
-# mise run seal-auth adds basic-auth.sealed.yaml here.
+- basic-auth.sealed.yaml
 images:
 - name: notes-api
   newName: ghcr.io/dgmmarin/notes-api

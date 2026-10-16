@@ -22,7 +22,7 @@ kubectl create secret generic basic-auth --namespace notes \\
   --dry-run=client -o yaml \\
 | kubeseal --format yaml > deploy/basic-auth.sealed.yaml
 cd deploy
-grep -q 'basic-auth.sealed.yaml' kustomization.yaml \\
+grep -q '^- basic-auth.sealed.yaml$' kustomization.yaml \\
   || sed -i 's|^# mise run seal-auth adds basic-auth.sealed.yaml here.$|- basic-auth.sealed.yaml|' kustomization.yaml
 echo 'Wrote basic-auth.sealed.yaml and listed it in kustomization.yaml. Commit and push both.'
 """
