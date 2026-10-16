@@ -14,7 +14,7 @@ resources:
 images:
 - name: notes-api
   newName: ghcr.io/dgmmarin/notes-api
-  newTag: not-built-yet
+  newTag: b16f0f23d376949991e8e99f5c0c38ea8387e18a
 - name: notes-frontend
   newName: ghcr.io/dgmmarin/notes-frontend
-  newTag: not-built-yet
+  newTag: b16f0f23d376949991e8e99f5c0c38ea8387e18a
