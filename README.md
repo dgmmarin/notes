@@ -46,8 +46,8 @@ ArgoCD then deploys that commit. The app runs at
    the login against the cluster's sealed-secrets key and lists the file in
    `deploy/kustomization.yaml`. Commit and push both files. Until you do,
    nginx refuses every request with 503.
-4. The Ingress uses `letsencrypt-staging`. When the staging certificate
-   works, change `deploy/ingress.yaml` to `letsencrypt-prod`.
+4. The Ingress uses `letsencrypt-prod`. For a new host name, test with
+   `letsencrypt-staging` first (rate limits).
 
 ## Local development
 

@@ -5,7 +5,7 @@ metadata:
   annotations:
     # Validate new hosts against letsencrypt-staging first (rate limits!),
     # then switch to letsencrypt-prod.
-    cert-manager.io/cluster-issuer: letsencrypt-staging
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     # Login prompt. The `basic-auth` Secret comes from basic-auth.sealed.yaml
     # (mise run seal-auth). Without it, nginx refuses every request.
     nginx.ingress.kubernetes.io/auth-type: basic
