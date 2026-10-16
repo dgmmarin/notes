@@ -42,6 +42,8 @@ ArgoCD then deploys that commit. The app runs at
 1. After the first workflow run, open both packages on GitHub and set their
    visibility to public, so the node can pull them without a login.
 2. Copy `.env.example` to `.env`, then set `NOTES_USER` and `NOTES_PASSWORD`.
+   Put the password in single quotes. mise reads `$` in an unquoted or
+   double-quoted value as a variable, and the sealed password is then wrong.
 3. Run `KUBECONFIG=../k8s.cluster/kubeconfig mise run seal-auth`. It encrypts
    the login against the cluster's sealed-secrets key and lists the file in
    `deploy/kustomization.yaml`. Commit and push both files. Until you do,
